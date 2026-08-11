@@ -1,0 +1,19 @@
+{
+  "name": "scenariosim-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Edge (Cloudflare Pages Functions) build of the ScenarioSim MCP server — deterministic what-if / scenario simulation for AI agents.",
+  "type": "module",
+  "scripts": {
+    "build": "esbuild worker-src/index.mjs --bundle --format=esm --target=es2022 --platform=neutral --outfile=site/_worker.js --minify",
+    "deploy": "npm run build && wrangler pages deploy site --project-name scenariosim-mcp --branch main --commit-dirty=true",
+    "dev": "npm run build && wrangler pages dev site",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "decimal.js": "^10.4.3"
+  },
+  "devDependencies": {
+    "esbuild": "^0.23.0"
+  }
+}

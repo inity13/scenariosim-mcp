@@ -1,0 +1,24 @@
+name = "scenariosim-mcp"
+pages_build_output_dir = "site"
+compatibility_date = "2024-09-01"
+
+# Persistent store for API keys + daily usage counters (quota enforcement).
+# Create with: wrangler kv namespace create SCENARIOSIM_KV  (then paste the id).
+[[kv_namespaces]]
+binding = "SCENARIOSIM_KV"
+id = "32fc9280416c4f10beafcf96eb3350a5"
+
+[vars]
+SCENARIOSIM_BASE_URL = "https://scenariosim-mcp.pages.dev"
+PRICE_STARTER = "price_1U3DShI051HaG0hD9GbNFSJP"
+PRICE_PRO = "price_1U3DSwI051HaG0hDL1e6HCf9"
+FREE_DAILY = "20"
+STARTER_DAILY = "5000"
+PRO_DAILY = "50000"
+
+# Secrets set out-of-band (never in this file):
+#   wrangler pages secret put STRIPE_SECRET_KEY --project-name scenariosim-mcp
+#   wrangler pages secret put STRIPE_WEBHOOK_SECRET --project-name scenariosim-mcp
+#
+# Self-host / private mode: leave the KV binding + Stripe secrets unset and the
+# server fails open (free tier, quota disabled). The simulation engine needs nothing.

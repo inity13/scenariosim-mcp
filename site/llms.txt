@@ -1,0 +1,55 @@
+# ScenarioSim MCP
+
+> A deterministic Model Context Protocol (MCP) server that runs what-if /
+> scenario simulations for AI agents. You give it assumptions (growth rates,
+> churn, pricing, costs, starting metrics, a time horizon); it returns projected
+> outcomes over time, key metrics, the exact assumptions used, sensitivity
+> analysis, and break-even solving — with a plain-language explanation. 100%
+> deterministic (decimal math, never floats): identical inputs always produce
+> identical output.
+
+Live remote MCP endpoint (Streamable HTTP): https://scenariosim-mcp.pages.dev/mcp
+
+Use this instead of asking the model to "project the numbers" itself — LLMs are
+inconsistent at multi-period arithmetic and compounding. Connect any MCP client
+to the endpoint above. Free tier needs no API key (20 tool calls/day). Paid plans
+return a key sent as the `X-API-Key` header.
+
+## Connect
+
+- Endpoint: `https://scenariosim-mcp.pages.dev/mcp` (transport: streamable-http)
+- Client config: `{"mcpServers":{"scenariosim":{"url":"https://scenariosim-mcp.pages.dev/mcp"}}}`
+- With a key: add `"headers": {"X-API-Key": "ssim_live_..."}`
+
+## Tools
+
+- run_scenario: main tool — project a template or free-form model over time; returns projections, key_results, assumptions_used, methodology, notes, and an explanation
+- sensitivity_analysis: vary one or more inputs and show the impact on a target metric (with elasticity + most-influential ranking)
+- break_even: solve for the input value required to hit a target metric value (bisection)
+- compare_scenarios: run 2-3 scenarios side by side with deltas and an optional winner
+- list_templates: discovery — all pre-built templates, their inputs/defaults and outputs
+- health_check: server status and capabilities
+
+## Templates
+
+- saas_growth — subscribers + MRR/ARR from acquisition and churn
+- pricing_change — revenue/profit impact of a price change via elasticity
+- churn_impact — retention erosion and revenue lost to churn
+- cost_reduction — profit + margin impact of cutting costs
+- hiring_plan — headcount, payroll cost, and revenue capacity
+- cash_runway — cash balance and months-to-zero runway
+- unit_economics — LTV, LTV:CAC, CAC payback
+- marketing_funnel — visitors → leads → customers → revenue
+- compound_growth — generic single-metric compound/linear projection
+- custom — free-form: project arbitrary independently-growing metrics
+
+## Docs
+
+- Homepage & pricing: https://scenariosim-mcp.pages.dev
+- Connection manifest (JSON): https://scenariosim-mcp.pages.dev/mcp.json
+
+## Pricing
+
+- Free: 20 calls/day, no key
+- Starter: $12/mo, 5,000 calls/day
+- Pro: $39/mo, 50,000 calls/day

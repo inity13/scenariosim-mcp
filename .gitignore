@@ -1,0 +1,18 @@
+# Node / edge build
+node_modules/
+package-lock.json
+site/_worker.js
+
+# Secrets / local env
+.env
+*.env
+!.env.example
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+.wrangler/
+
+# Test / tooling caches
+coverage/

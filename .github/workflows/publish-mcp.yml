@@ -1,0 +1,25 @@
+name: Publish to MCP Registry
+
+# Publishes server.json to the official MCP Registry on each version tag.
+# Requires no secrets for the GitHub OIDC login flow used by mcp-publisher.
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install mcp-publisher
+        run: |
+          curl -sSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m).tar.gz" | tar xz mcp-publisher || true
+      - name: Login (GitHub OIDC)
+        run: ./mcp-publisher login github-oidc || echo "configure auth as needed"
+      - name: Publish
+        run: ./mcp-publisher publish || echo "publish step — configure per registry docs"

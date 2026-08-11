@@ -1,0 +1,45 @@
+{
+  "name": "ScenarioSim MCP",
+  "description": "Deterministic what-if / scenario simulation for AI agents: project SaaS growth, pricing changes, churn, cost cuts, hiring, cash runway, unit economics and more over time, with sensitivity analysis and break-even solving. Exact decimals, never floats.",
+  "version": "1.0.0",
+  "homepage": "https://scenariosim-mcp.pages.dev",
+  "vendor": "DataNest",
+  "license": "MIT",
+  "transport": {
+    "type": "streamable-http",
+    "url": "https://scenariosim-mcp.pages.dev/mcp"
+  },
+  "authentication": {
+    "type": "api_key",
+    "required": false,
+    "header": "X-API-Key",
+    "notes": "Free tier requires no key (20 calls/day). Paid plans return a key."
+  },
+  "client_config_examples": {
+    "generic": {
+      "mcpServers": { "scenariosim": { "url": "https://scenariosim-mcp.pages.dev/mcp" } }
+    },
+    "with_api_key": {
+      "mcpServers": {
+        "scenariosim": {
+          "url": "https://scenariosim-mcp.pages.dev/mcp",
+          "headers": { "X-API-Key": "ssim_live_your_key" }
+        }
+      }
+    }
+  },
+  "tools": [
+    "run_scenario", "sensitivity_analysis", "break_even",
+    "compare_scenarios", "list_templates", "health_check"
+  ],
+  "templates": [
+    "saas_growth", "pricing_change", "churn_impact", "cost_reduction",
+    "hiring_plan", "cash_runway", "unit_economics", "marketing_funnel", "compound_growth"
+  ],
+  "pricing": [
+    { "plan": "free", "price_usd_month": 0, "daily_calls": 20 },
+    { "plan": "starter", "price_usd_month": 12, "daily_calls": 5000 },
+    { "plan": "pro", "price_usd_month": 39, "daily_calls": 50000 }
+  ],
+  "docs": "https://scenariosim-mcp.pages.dev/llms.txt"
+}
