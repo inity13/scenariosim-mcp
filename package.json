@@ -1,6 +1,6 @@
 {
   "name": "scenariosim-mcp",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": false,
   "description": "ScenarioSim MCP \u2014 deterministic what-if / scenario simulation for AI agents: projections over time, sensitivity analysis, and break-even solving. Runs over stdio (npx) or as a remote server.",
   "type": "module",
@@ -54,5 +54,6 @@
   },
   "engines": {
     "node": ">=18"
-  }
+  },
+  "mcpName": "io.github.inity13/scenariosim-mcp"
 }

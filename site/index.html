@@ -260,6 +260,22 @@
   </div>
 </section>
 
+<section id="hosted-vs-self">
+  <div class="wrap">
+    <h2>Hosted vs. self-hosted — what you're paying for</h2>
+    <p class="sub" style="max-width:820px">The ScenarioSim engine is open-source (MIT) and free to run yourself — paid plans buy the <b>hosted convenience</b>, not the algorithm. It's the same deterministic engine either way.</p>
+    <table>
+      <tr><th>&nbsp;</th><th>Self-hosted (free, MIT)</th><th>Hosted (this site)</th></tr>
+      <tr><td>Price</td><td>Free, unlimited</td><td>Free tier + optional paid plans</td></tr>
+      <tr><td>Setup</td><td>One command: <code>npx -y scenariosim-mcp</code></td><td>Zero — point your client at the URL</td></tr>
+      <tr><td>Transport</td><td>stdio (local process)</td><td>Streamable HTTP (any remote agent)</td></tr>
+      <tr><td>Runs on</td><td>Your machine / your server</td><td>Cloudflare's edge, always on</td></tr>
+      <tr><td>Best for</td><td>Local dev, offline, full control</td><td>Hosted agents that can only reach a URL</td></tr>
+    </table>
+    <p class="ptiny" style="margin-top:12px">Run it yourself right now: <code>npx -y scenariosim-mcp</code> — or deploy your own copy on Cloudflare Pages / Node / Deno / Bun. What you pay us for is not having to.</p>
+  </div>
+</section>
+
 <section id="pricing">
   <div class="wrap">
     <h2>Pricing</h2>
