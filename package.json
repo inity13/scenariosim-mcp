@@ -1,19 +1,58 @@
 {
   "name": "scenariosim-mcp",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Edge (Cloudflare Pages Functions) build of the ScenarioSim MCP server — deterministic what-if / scenario simulation for AI agents.",
+  "version": "1.0.1",
+  "private": false,
+  "description": "ScenarioSim MCP \u2014 deterministic what-if / scenario simulation for AI agents: projections over time, sensitivity analysis, and break-even solving. Runs over stdio (npx) or as a remote server.",
   "type": "module",
   "scripts": {
     "build": "esbuild worker-src/index.mjs --bundle --format=esm --target=es2022 --platform=neutral --outfile=site/_worker.js --minify",
     "deploy": "npm run build && wrangler pages deploy site --project-name scenariosim-mcp --branch main --commit-dirty=true",
     "dev": "npm run build && wrangler pages dev site",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "start": "node server.mjs"
   },
   "dependencies": {
     "decimal.js": "^10.4.3"
   },
   "devDependencies": {
     "esbuild": "^0.23.0"
+  },
+  "bin": {
+    "scenariosim-mcp": "server.mjs"
+  },
+  "files": [
+    "server.mjs",
+    "worker-src/engine.mjs",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "mcp-server",
+    "ai",
+    "ai-agents",
+    "llm",
+    "deterministic",
+    "claude",
+    "cursor",
+    "scenario-simulation",
+    "what-if-analysis",
+    "forecasting",
+    "sensitivity-analysis",
+    "break-even"
+  ],
+  "license": "MIT",
+  "author": "DataNest",
+  "homepage": "https://scenariosim-mcp.pages.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/inity13/scenariosim-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/inity13/scenariosim-mcp/issues"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
