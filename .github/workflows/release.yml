@@ -1,0 +1,69 @@
+name: Release (npm + MCP Registry)
+
+# Fires on a version tag (vX.Y.Z). Publishes the npm package via OIDC trusted
+# publishing (no token, no OTP) and registers the version in the official MCP
+# Registry. Both steps are idempotent — re-running a tag never red-Xes on
+# "already published".
+#
+# ONE-TIME SETUP (per package, on npmjs.com):
+#   npmjs.com -> the package -> Settings -> Publishing access ->
+#   "Trusted Publisher" -> GitHub Actions:
+#     Organization/user: inity13
+#     Repository:        <this repo>
+#     Workflow filename: release.yml
+#   (No NPM_TOKEN secret is needed once this is configured.)
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write   # required for BOTH npm OIDC and MCP Registry GitHub-OIDC login
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: "https://registry.npmjs.org"
+
+      # npm OIDC trusted publishing requires npm >= 11.5.1
+      - name: Upgrade npm
+        run: npm install -g npm@latest
+
+      - name: Publish to npm (OIDC trusted publishing — idempotent)
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          if npm view "$NAME@$VER" version >/dev/null 2>&1; then
+            echo "npm already has $NAME@$VER — skipping npm publish."
+          else
+            npm publish --access public --provenance
+          fi
+
+      - name: Install mcp-publisher
+        run: |
+          curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" \
+            | tar xz mcp-publisher
+
+      - name: Validate server.json
+        run: ./mcp-publisher validate
+
+      - name: Login to MCP Registry (GitHub OIDC)
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish to MCP Registry (tolerate duplicate version)
+        run: |
+          set +e
+          OUT=$(./mcp-publisher publish 2>&1); CODE=$?
+          echo "$OUT"
+          if [ $CODE -ne 0 ]; then
+            echo "$OUT" | grep -qi "duplicate version" && { echo "Version already in MCP Registry — treating as success."; exit 0; }
+            exit $CODE
+          fi
