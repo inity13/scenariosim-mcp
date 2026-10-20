@@ -277,7 +277,7 @@ export default {
       const payload = await request.text();
       const ok = await B.verifyStripeSignature(env, payload, request.headers.get("stripe-signature"));
       if (!ok) return json({ error: "invalid signature" }, 400);
-      try { await B.handleWebhookEvent(env, JSON.parse(payload)); } catch (_) {}
+      try { await B.handleWebhookEvent(env, JSON.parse(payload)); } catch (_) { return json({ error: "Webhook processing failed; retry required" }, 500); }
       return json({ received: true });
     }
 
