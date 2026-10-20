@@ -191,13 +191,16 @@ async function provisionSession(env, sessionId) {
     throw new CheckoutValidationError("Checkout subscription identity does not match.");
   if (subscription.status !== "active" && subscription.status !== "trialing")
     throw new CheckoutValidationError("Checkout subscription is not active.");
+  const prior = existing ? await kv.get(`key:${existing}`, "json") : null;
+  const recovery = prior && prior.customer === customer && prior.subscription === subscription.id;
   const subscriptionPrice = subscription.items?.data?.[0]?.price?.id;
-  if (subscriptionPrice !== priceId) throw new CheckoutValidationError("Checkout and subscription prices do not match.");
+  // An established owned key may recover after a legitimate plan change. Fresh
+  // provisioning still requires exact Checkout/current-subscription price parity.
+  if (subscriptionPrice !== priceId && !recovery) throw new CheckoutValidationError("Checkout and subscription prices do not match.");
   const plan = planForPrice(env, subscriptionPrice);
   if (!plan) throw new CheckoutValidationError("Subscription price is not configured for this service.");
   const subId = typeof s.subscription === "object" ? s.subscription?.id : s.subscription;
   if (subscription.id !== subId) throw new CheckoutValidationError("Checkout subscription identity does not match.");
-  const prior = existing ? await kv.get(`key:${existing}`, "json") : null;
   if (prior && (prior.customer !== customer || prior.subscription !== subId))
     throw new CheckoutValidationError("Existing key identity does not match this checkout.");
   if (await kv.get(`revoked:${subId}`)) throw new CheckoutValidationError("Subscription was deleted.");

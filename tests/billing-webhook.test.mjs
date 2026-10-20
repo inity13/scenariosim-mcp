@@ -68,3 +68,13 @@ test('timestamp bounds, body integrity, duplicate timestamp and multiple v1 sign
   assert.equal(await B.verifyStripeSignature(f.env,payload,`${valid},t=${now}`),false);
   assert.equal(await B.verifyStripeSignature(f.env,payload+' ',valid),false);
 });
+
+test('established owned key recovers current configured plan after upgrade without allowing fresh mismatch', async()=>{
+  const f=fixture();await using(f,async()=>{
+    const first=await B.provisionFromSession(f.env,'cs_test_fixture');
+    f.subscription.items.data[0].price.id='price_pro';
+    const recovered=await B.provisionFromSession(f.env,'cs_test_fixture');
+    assert.equal(recovered.key,first.key);assert.equal(recovered.plan,'pro');assert.equal(records(f).length,1);
+    f.session.customer='cus_other';await assert.rejects(()=>B.provisionFromSession(f.env,'cs_test_fixture'));
+  });
+});
