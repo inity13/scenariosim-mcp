@@ -1,0 +1,27 @@
+name: Hosted billing fulfilment
+on:
+  pull_request:
+    paths: ['worker-src/**', 'tests/**', 'package*.json', '.github/workflows/hosted-billing.yml']
+  push:
+    branches: [main]
+    paths: ['worker-src/**', 'tests/**', 'package*.json', '.github/workflows/hosted-billing.yml']
+permissions:
+  contents: read
+jobs:
+  offline-billing:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - run: python -m pip install pytest
+      - run: node --check worker-src/billing.mjs && node --check worker-src/index.mjs
+      - run: npm test
+      - run: python -m pytest tests/test_billing_webhook.py -q
+      - run: npm run build
